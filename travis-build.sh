@@ -14,10 +14,11 @@ EOL
     chmod 600 $HOME/.netrc
 }
 
-if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && [ "${RELEASE}" = "true" ]; then
+# && [ "${RELEASE}" = "true" ]
+if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
     echo "Deploying release to Bintray"
     saveGitCredentials
-    git checkout -f ${TRAVIS_BRANCH}
+#    git checkout -f ${TRAVIS_BRANCH}
     ./gradlew clean assemble && ./gradlew check --info && ./gradlew bintrayUpload -x check --info
 else
     echo "Verify"
