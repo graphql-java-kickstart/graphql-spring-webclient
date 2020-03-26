@@ -36,10 +36,10 @@ should be defined as `graphql.client.url` in your Spring Boot configuration file
 
 | Property | Description |
 |----------|-------------|
-| url | Full URL of the GraphQL API to connect to, e.g. https://graphql.github.com/graphql |
-| oauth2.client-id | OAuth2 client id |
-| oauth2.client-secret | OAuth2 client secret |
-| oauth2.token-uri | Token URI of the identity provider |
-| oauth2.authorization-grant-type | By default the grant type `client_credentials` is used |
+| `url` | Full URL of the GraphQL API to connect to, e.g. https://graphql.github.com/graphql |
+| `oauth2.client-id` | OAuth2 client id |
+| `oauth2.client-secret` | OAuth2 client secret |
+| `oauth2.token-uri` | Token URI of the identity provider |
+| `oauth2.authorization-grant-type` | By default the grant type `client_credentials` is used |
  
 
