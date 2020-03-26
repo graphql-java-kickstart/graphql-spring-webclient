@@ -23,14 +23,18 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
   private final ObjectMapper objectMapper;
 
   @Override
-  public <T> Mono<T> query(String resource, Map<String, Object> variables, Class<T> returnType) {
+  public <T> Mono<T> post(String resource, Class<T> returnType) {
+    return post(resource, null, returnType);
+  }
+
+  @Override
+  public <T> Mono<T> post(String resource, Map<String, Object> variables, Class<T> returnType) {
     GraphQLRequest request = GraphQLRequest.builder()
         .query(loadQuery(resource))
         .variables(variables)
         .build();
 
     return webClient.post()
-        .uri("/graphql")
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(request)
         .retrieve()

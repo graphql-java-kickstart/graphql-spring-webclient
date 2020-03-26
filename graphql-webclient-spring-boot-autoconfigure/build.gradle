@@ -1,6 +1,7 @@
 dependencies {
-    implementation(project(':graphql-webclient'))
+    api(project(':graphql-webclient'))
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.security:spring-security-oauth2-client"
 }

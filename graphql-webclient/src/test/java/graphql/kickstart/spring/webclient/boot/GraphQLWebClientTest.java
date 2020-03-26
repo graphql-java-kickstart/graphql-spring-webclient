@@ -31,7 +31,7 @@ class GraphQLWebClientTest {
   @BeforeEach
   void beforeEach() {
     WebClient webClient = WebClient.builder()
-        .baseUrl("http://localhost:" + randomServerPort)
+        .baseUrl("http://localhost:" + randomServerPort + "/graphql")
         .build();
     graphqlClient = new GraphQLWebClientImpl(webClient, objectMapper);
   }
@@ -39,7 +39,7 @@ class GraphQLWebClientTest {
   @Test
   @DisplayName("Query test without variables and returning String")
   void queryWithoutVariablesSucceeds() {
-    Mono<String> response = graphqlClient.query("query-test.graphql", null, String.class);
+    Mono<String> response = graphqlClient.post("query-test.graphql", null, String.class);
     assertNotNull("response should not be null", response);
     assertEquals("response should equal 'test'", "test", response.block());
   }
@@ -49,7 +49,7 @@ class GraphQLWebClientTest {
   void echoStringSucceeds() {
     Map<String, Object> variables = new HashMap<>();
     variables.put("value", "echo echo echo");
-    Mono<String> response = graphqlClient.query("query-echo.graphql", variables, String.class);
+    Mono<String> response = graphqlClient.post("query-echo.graphql", variables, String.class);
     assertNotNull("response should not be null", response);
     assertEquals("response should equal 'echo echo echo'", "echo echo echo", response.block());
   }
@@ -59,7 +59,7 @@ class GraphQLWebClientTest {
   void simpleTypeSucceeds() {
     Map<String, Object> variables = new HashMap<>();
     variables.put("id", "my-id");
-    Mono<Simple> response = graphqlClient.query("query-simple.graphql", variables, Simple.class);
+    Mono<Simple> response = graphqlClient.post("query-simple.graphql", variables, Simple.class);
     assertNotNull("response should not be null", response);
     Simple object = response.block();
     assertNotNull(object);
