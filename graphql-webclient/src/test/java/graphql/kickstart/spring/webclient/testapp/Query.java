@@ -14,4 +14,8 @@ class Query implements GraphQLQueryResolver {
     return value;
   }
 
+  Simple simple(String id) {
+    return new Simple(id);
+  }
+
 }

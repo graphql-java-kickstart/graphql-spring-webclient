@@ -1,4 +1,9 @@
 type Query {
     test: String!
     echo(value: String!): String!
+    simple(id: ID!): Simple!
+}
+
+type Simple {
+    id: ID!
 }

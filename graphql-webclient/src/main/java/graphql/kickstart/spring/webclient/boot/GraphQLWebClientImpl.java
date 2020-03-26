@@ -1,9 +1,9 @@
 package graphql.kickstart.spring.webclient.boot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 class GraphQLWebClientImpl implements GraphQLWebClient {
 
   private final WebClient webClient;
+  private final ObjectMapper objectMapper;
 
   @Override
   public <T> Mono<T> query(String resource, Map<String, Object> variables, Class<T> returnType) {
@@ -34,12 +35,18 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
         .bodyValue(request)
         .retrieve()
         .bodyToMono(GraphQLResponse.class)
-        .map(it -> it.getFirstObject(returnType));
+        .map(GraphQLResponse::getFirstObject)
+        .map(it -> readValue(it, returnType));
+  }
+
+  @SneakyThrows
+  private <T> T readValue(Object value, Class<T> returnType) {
+    log.debug("Read value: '{}'", value);
+    return objectMapper.convertValue(value, returnType);
   }
 
   @SneakyThrows
   private String loadQuery(String path) {
-//    Resource resource = resourceLoader.getResource("classpath:" + location);
     return loadResource(new ClassPathResource(path));
   }
 

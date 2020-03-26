@@ -1,0 +1,5 @@
+query simple($id: ID!) {
+    simple(id: $id) {
+        id
+    }
+}

@@ -11,8 +11,8 @@ class GraphQLResponse {
   private Map<String, Object> data;
   private List<String> errors;
 
-  <T> T getFirstObject(Class<T> type) {
-    return (T) data.entrySet().stream().findFirst().map(Entry::getValue).orElseThrow();
+  Object getFirstObject() {
+    return data.entrySet().stream().findFirst().map(Entry::getValue).orElseThrow();
   }
 
 }
