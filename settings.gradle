@@ -1,0 +1,13 @@
+buildscript {
+    pluginManagement {
+        repositories {
+            gradlePluginPortal()
+        }
+    }
+}
+
+rootProject.name = 'graphql-spring-webclient'
+
+include ':graphql-webclient'
+include ':graphql-webclient-spring-boot-autoconfigure'
+include ':graphql-webclient-spring-boot-starter'
