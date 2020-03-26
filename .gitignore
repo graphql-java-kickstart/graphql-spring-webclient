@@ -14,3 +14,6 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 /graphql-spring-webclient.iml
 /.idea/
+/graphql-webclient/build/
+/graphql-webclient-spring-boot-autoconfigure/build/
+/graphql-webclient-spring-boot-starter/build/

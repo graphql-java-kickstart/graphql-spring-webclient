@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -22,6 +23,9 @@ class GraphQLWebClientTest {
   @LocalServerPort
   private int randomServerPort;
 
+  @Autowired
+  private ObjectMapper objectMapper;
+
   private GraphQLWebClient graphqlClient;
 
   @BeforeEach
@@ -29,7 +33,7 @@ class GraphQLWebClientTest {
     WebClient webClient = WebClient.builder()
         .baseUrl("http://localhost:" + randomServerPort)
         .build();
-    graphqlClient = new GraphQLWebClientImpl(webClient, new ObjectMapper());
+    graphqlClient = new GraphQLWebClientImpl(webClient, objectMapper);
   }
 
   @Test
