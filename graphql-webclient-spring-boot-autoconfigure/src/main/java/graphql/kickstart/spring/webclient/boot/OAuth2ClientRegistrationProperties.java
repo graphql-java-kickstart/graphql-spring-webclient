@@ -2,6 +2,7 @@ package graphql.kickstart.spring.webclient.boot;
 
 import static java.util.Optional.ofNullable;
 
+import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -33,31 +34,34 @@ class OAuth2ClientRegistrationProperties {
   private String jwkSetUri;
   private String issuerUri;
 
-  ClientRegistration getClientRegistration() {
-    ClientRegistration.Builder builder = ClientRegistration.withRegistrationId("graphql")
-        .clientId(getClientId())
-        .clientSecret(getClientSecret())
-        .redirectUriTemplate(getRedirectUri())
-        .scope(getScope())
-        .clientName(getClientName())
-        .authorizationUri(getAuthorizationUri())
-        .tokenUri(getTokenUri())
-        .userInfoUri(getUserInfoUri())
-        .jwkSetUri(getJwkSetUri());
+  Optional<ClientRegistration> getClientRegistration() {
+    if (clientId != null) {
+      ClientRegistration.Builder builder = ClientRegistration.withRegistrationId("graphql")
+          .clientId(getClientId())
+          .clientSecret(getClientSecret())
+          .redirectUriTemplate(getRedirectUri())
+          .scope(getScope())
+          .clientName(getClientName())
+          .authorizationUri(getAuthorizationUri())
+          .tokenUri(getTokenUri())
+          .userInfoUri(getUserInfoUri())
+          .jwkSetUri(getJwkSetUri());
 
-    ofNullable(getClientAuthenticationMethod())
-        .map(ClientAuthenticationMethod::new)
-        .ifPresent(builder::clientAuthenticationMethod);
+      ofNullable(getClientAuthenticationMethod())
+          .map(ClientAuthenticationMethod::new)
+          .ifPresent(builder::clientAuthenticationMethod);
 
-    ofNullable(getAuthorizationGrantType())
-        .map(AuthorizationGrantType::new)
-        .ifPresent(builder::authorizationGrantType);
+      ofNullable(getAuthorizationGrantType())
+          .map(AuthorizationGrantType::new)
+          .ifPresent(builder::authorizationGrantType);
 
-    ofNullable(getUserInfoAuthenticationMethod())
-        .map(AuthenticationMethod::new)
-        .ifPresent(builder::userInfoAuthenticationMethod);
+      ofNullable(getUserInfoAuthenticationMethod())
+          .map(AuthenticationMethod::new)
+          .ifPresent(builder::userInfoAuthenticationMethod);
 
-    return builder.build();
+      return Optional.of(builder.build());
+    }
+    return Optional.empty();
   }
 
 }
