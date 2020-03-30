@@ -2,10 +2,10 @@ package graphql.kickstart.spring.webclient.boot;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.testapp.Simple;
-import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,9 +47,7 @@ class GraphQLWebClientTest {
   @Test
   @DisplayName("Query echo with String variable and returning String")
   void echoStringSucceeds() {
-    Map<String, Object> variables = new HashMap<>();
-    variables.put("value", "echo echo echo");
-    Mono<String> response = graphqlClient.post("query-echo.graphql", variables, String.class);
+    Mono<String> response = graphqlClient.post("query-echo.graphql", Map.of("value", "echo echo echo"), String.class);
     assertNotNull("response should not be null", response);
     assertEquals("response should equal 'echo echo echo'", "echo echo echo", response.block());
   }
@@ -57,13 +55,17 @@ class GraphQLWebClientTest {
   @Test
   @DisplayName("Query simple return type")
   void simpleTypeSucceeds() {
-    Map<String, Object> variables = new HashMap<>();
-    variables.put("id", "my-id");
-    Mono<Simple> response = graphqlClient.post("query-simple.graphql", variables, Simple.class);
+    Mono<Simple> response = graphqlClient.post("query-simple.graphql", Map.of("id", "my-id"), Simple.class);
     assertNotNull("response should not be null", response);
     Simple object = response.block();
     assertNotNull(object);
     assertEquals("response id should equal 'my-id'", "my-id", object.getId());
+  }
+
+  @Test
+  void errorResponseSucceeds() {
+    Mono<String> response = graphqlClient.post("error.graphql", String.class);
+    assertThrows(GraphQLErrorsException.class, response::block);
   }
 
 }
