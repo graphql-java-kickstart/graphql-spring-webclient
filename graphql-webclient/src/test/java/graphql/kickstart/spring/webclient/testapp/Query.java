@@ -10,6 +10,10 @@ class Query implements GraphQLQueryResolver {
     return "test";
   }
 
+  String noResponse() {
+    return null;
+  }
+
   String echo(String value) {
     return value;
   }

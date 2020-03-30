@@ -39,7 +39,7 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
         .bodyValue(request)
         .retrieve()
         .bodyToMono(GraphQLResponse.class)
-        .map(GraphQLResponse::getFirstObject)
+        .flatMap(it -> Mono.justOrEmpty(it.getFirstObject()))
         .map(it -> readValue(it, returnType));
   }
 

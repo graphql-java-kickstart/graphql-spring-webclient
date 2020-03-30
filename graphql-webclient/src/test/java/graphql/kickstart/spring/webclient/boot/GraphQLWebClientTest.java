@@ -3,10 +3,12 @@ package graphql.kickstart.spring.webclient.boot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.testapp.Simple;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,6 +68,13 @@ class GraphQLWebClientTest {
   void errorResponseSucceeds() {
     Mono<String> response = graphqlClient.post("error.graphql", String.class);
     assertThrows(GraphQLErrorsException.class, response::block);
+  }
+
+  @Test
+  void noResponseSucceeds() {
+    Mono<String> response = graphqlClient.post("query-noResponse.graphql", String.class);
+    Optional<String> noResponse = response.blockOptional();
+    assertTrue("response should be empty", noResponse.isEmpty());
   }
 
 }

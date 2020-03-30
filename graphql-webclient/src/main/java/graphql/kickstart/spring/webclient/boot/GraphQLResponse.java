@@ -3,7 +3,6 @@ package graphql.kickstart.spring.webclient.boot;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 import lombok.Data;
 
 @Data
@@ -15,10 +14,10 @@ class GraphQLResponse {
   Object getFirstObject() {
     validateNoErrors();
 
-    if (data != null) {
-      return data.entrySet().stream().findFirst().map(Entry::getValue).orElseThrow(NoSuchElementException::new);
+    if (data != null && !data.isEmpty()) {
+      return data.entrySet().stream().findFirst().map(Entry::getValue).orElse(null);
     }
-    throw new NoSuchElementException();
+    return null;
   }
 
   private void validateNoErrors() {

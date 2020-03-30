@@ -1,5 +1,6 @@
 type Query {
     test: String!
+    noResponse: String
     echo(value: String!): String!
     simple(id: ID!): Simple!
 }

@@ -17,6 +17,9 @@ EOL
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
 #  if [ "${RELEASE}" = "true" ]; then
     echo "Deploying release to Bintray"
+    VERSION=$(gradle properties -q | grep "version:" | grep -v "kotlin_version:" | awk '{print $2}' | tr -d '[:space:]')
+    NEXT_VERSION="${VERSION}b$(date +%Y%m%d%H%M)"
+    sed -i -E "s/^version(\s)?=.*/version=${NEXT_VERSION}/" gradle.properties
     saveGitCredentials
     ./gradlew clean assemble && ./gradlew check --info && ./gradlew bintrayUpload -x check --info
 #  else
