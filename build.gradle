@@ -68,7 +68,7 @@ subprojects {
 
     java {
         withSourcesJar()
-//        withJavadocJar()
+        withJavadocJar()
     }
 
     publishing {
@@ -140,7 +140,11 @@ subprojects {
         contextUrl = 'http://oss.jfrog.org'
         publish {
             repository {
-                repoKey = 'oss-snapshot-local'
+                if (project.version.endsWith("-SNAPSHOT")) {
+                    repoKey = 'oss-snapshot-local'
+                } else {
+                    repoKey = 'oss-release-local'
+                }
                 username = System.env.BINTRAY_USER ?: project.findProperty('BINTRAY_USER') ?: ''
                 password = System.env.BINTRAY_PASS ?: project.findProperty('BINTRAY_PASS') ?: ''
             }
@@ -151,7 +155,7 @@ subprojects {
             }
         }
         resolve {
-            repoKey = 'jcenter'
+            repoKey = 'oss-snapshot-local'
         }
         clientConfig.info.setBuildNumber(System.getProperty('build.number'))
     }
