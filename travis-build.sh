@@ -15,7 +15,7 @@ EOL
 }
 
 getVersion() {
-  gradle properties -q | grep "version:" | grep -v "kotlin_version:" | awk '{print $2}' | tr -d '[:space:]'
+  ./gradlew properties -q | grep "version:" | grep -v "kotlin_version:" | awk '{print $2}' | tr -d '[:space:]'
 }
 
 removeSnapshots() {
@@ -52,24 +52,24 @@ commitNextVersion() {
   git commit -a -m "Update version for release"
 }
 
-if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
-  if [ "${RELEASE}" = "true" ]; then
+#if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
+#  if [ "${RELEASE}" = "true" ]; then
     echo "Deploying release to Bintray"
     saveGitCredentials
     removeSnapshots
 
-    ./gradlew clean assemble && ./gradlew check --info && ./gradlew bintrayUpload -x check --info
+#    ./gradlew clean assemble && ./gradlew check --info && ./gradlew bintrayUpload -x check --info
 
     commitRelease
     bumpVersion
     commitNextVersion
     git push --follow-tags
-  else
-    echo "Deploying snapshot"
-    saveGitCredentials
-    ./gradlew artifactoryPublish -Dsnapshot=true -Dbuild.number="${TRAVIS_BUILD_NUMBER}"
-  fi
-else
-    echo "Verify"
-    ./gradlew clean assemble && ./gradlew check --info
-fi
+#  else
+#    echo "Deploying snapshot"
+#    saveGitCredentials
+#    ./gradlew artifactoryPublish -Dsnapshot=true -Dbuild.number="${TRAVIS_BUILD_NUMBER}"
+#  fi
+#else
+#    echo "Verify"
+#    ./gradlew clean assemble && ./gradlew check --info
+#fi
