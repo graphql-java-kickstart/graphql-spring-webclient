@@ -56,6 +56,7 @@ commitNextVersion() {
 #  if [ "${RELEASE}" = "true" ]; then
     echo "Deploying release to Bintray"
     saveGitCredentials
+    git checkout -f ${TRAVIS_BRANCH}
     removeSnapshots
 
 #    ./gradlew clean assemble && ./gradlew check --info && ./gradlew bintrayUpload -x check --info
