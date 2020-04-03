@@ -7,6 +7,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.testapp.Simple;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -75,6 +77,13 @@ class GraphQLWebClientTest {
     Mono<String> response = graphqlClient.post("query-noResponse.graphql", String.class);
     Optional<String> noResponse = response.blockOptional();
     assertTrue("response should be empty", noResponse.isEmpty());
+  }
+
+  @Test
+  void listSucceeds() {
+    Flux<Simple> response = graphqlClient.flux("query-list.graphql", Simple.class);
+    List<Simple> list = response.collectList().block();
+    assertEquals(1, list.size());
   }
 
 }

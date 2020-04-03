@@ -3,6 +3,7 @@ package graphql.kickstart.spring.webclient.boot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -28,11 +29,11 @@ public class GraphQLWebClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public WebClient webClient(ReactiveClientRegistrationRepository clientRegistrations) {
+  public WebClient webClient(@Autowired(required = false) ReactiveClientRegistrationRepository clientRegistrations) {
     WebClient.Builder clientBuilder = WebClient.builder()
         .baseUrl(graphqlClientProperties.getUrl());
 
-    if (clientRegistrations.findByRegistrationId("graphql").blockOptional().isPresent()) {
+    if (clientRegistrations != null && clientRegistrations.findByRegistrationId("graphql").blockOptional().isPresent()) {
       ServerOAuth2AuthorizedClientExchangeFilterFunction oauth =
           new ServerOAuth2AuthorizedClientExchangeFilterFunction(
               clientRegistrations,

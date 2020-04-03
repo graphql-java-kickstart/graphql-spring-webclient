@@ -3,6 +3,7 @@ type Query {
     noResponse: String
     echo(value: String!): String!
     simple(id: ID!): Simple!
+    list: [Simple!]!
 }
 
 type Simple {
