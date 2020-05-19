@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@AutoConfigureAfter({JacksonAutoConfiguration.class, OAuth2ClientAutoConfiguration.class})
+@AutoConfigureAfter({JacksonAutoConfiguration.class, OAuth2ClientAutoConfiguration.class, WebFluxAutoConfiguration.class})
 @EnableConfigurationProperties(GraphQLClientProperties.class)
 @ComponentScan(basePackageClasses = GraphQLWebClientImpl.class)
 public class GraphQLWebClientAutoConfiguration {
@@ -29,9 +30,11 @@ public class GraphQLWebClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public WebClient webClient(@Autowired(required = false) ReactiveClientRegistrationRepository clientRegistrations) {
-    WebClient.Builder clientBuilder = WebClient.builder()
-        .baseUrl(graphqlClientProperties.getUrl());
+  public WebClient webClient(
+      WebClient.Builder clientBuilder,
+      @Autowired(required = false) ReactiveClientRegistrationRepository clientRegistrations
+  ) {
+    clientBuilder.baseUrl(graphqlClientProperties.getUrl());
 
     if (clientRegistrations != null && clientRegistrations.findByRegistrationId("graphql").blockOptional().isPresent()) {
       ServerOAuth2AuthorizedClientExchangeFilterFunction oauth =
