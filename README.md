@@ -44,4 +44,14 @@ should be defined as `graphql.client.url` in your Spring Boot configuration file
 | `oauth2.token-uri` | Token URI of the identity provider |
 | `oauth2.authorization-grant-type` | By default the grant type `client_credentials` is used |
  
+### Max in memory size
 
+In case you need to work with large responses you might run into the following error:
+```
+Exceeded limit on max bytes to buffer : 262144
+```
+In that case starting with version 0.1.2 you can use the default Spring Boot configuration property to configure
+the max in memory size to use:
+```properties
+spring.codec.max-in-memory-size=10MB
+``` 
