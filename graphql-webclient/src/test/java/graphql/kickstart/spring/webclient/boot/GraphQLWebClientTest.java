@@ -37,7 +37,7 @@ class GraphQLWebClientTest {
     WebClient webClient = WebClient.builder()
         .baseUrl("http://localhost:" + randomServerPort + "/graphql")
         .build();
-    graphqlClient = new GraphQLWebClientImpl(webClient, objectMapper);
+    graphqlClient = GraphQLWebClient.newInstance(webClient, objectMapper);
   }
 
   @Test
