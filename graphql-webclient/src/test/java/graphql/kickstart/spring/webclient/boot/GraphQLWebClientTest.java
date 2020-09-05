@@ -83,6 +83,7 @@ class GraphQLWebClientTest {
   void listSucceeds() {
     Flux<Simple> response = graphqlClient.flux("query-list.graphql", Simple.class);
     List<Simple> list = response.collectList().block();
+    assertNotNull(list);
     assertEquals(1, list.size());
   }
 
