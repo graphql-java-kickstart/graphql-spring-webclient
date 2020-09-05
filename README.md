@@ -30,6 +30,11 @@ graphql:
     url: https://graphql.github.com/graphql
 ```
 
+### Using latest Snapshots
+
+You can use the latest Snapshots by configuring the Snapshot repository, see https://www.graphql-java-kickstart.com/servlet/#using-the-latest-development-build.
+
+
 ## Configuration
 
 The following tables list the configurable properties of the GraphQL Spring Webclient and their default values.
