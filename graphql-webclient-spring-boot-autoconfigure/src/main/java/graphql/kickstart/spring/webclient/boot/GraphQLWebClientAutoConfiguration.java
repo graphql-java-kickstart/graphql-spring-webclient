@@ -31,7 +31,7 @@ public class GraphQLWebClientAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public WebClient webClient(
-      WebClient.Builder clientBuilder,
+      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") WebClient.Builder clientBuilder,
       @Autowired(required = false) ReactiveClientRegistrationRepository clientRegistrations
   ) {
     clientBuilder.baseUrl(graphqlClientProperties.getUrl());
