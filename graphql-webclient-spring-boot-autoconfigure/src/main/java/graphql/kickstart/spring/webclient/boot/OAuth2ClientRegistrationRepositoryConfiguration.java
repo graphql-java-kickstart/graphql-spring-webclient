@@ -1,6 +1,6 @@
 package graphql.kickstart.spring.webclient.boot;
 
-import java.util.List;
+import java.util.Arrays;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,7 @@ class OAuth2ClientRegistrationRepositoryConfiguration {
   @ConditionalOnMissingBean({ReactiveClientRegistrationRepository.class})
   InMemoryReactiveClientRegistrationRepository clientRegistrationRepository(OAuth2ClientRegistrationProperties properties) {
     return properties.getClientRegistration()
-        .map(List::of)
+        .map(Arrays::asList)
         .map(InMemoryReactiveClientRegistrationRepository::new)
         .orElse(null);
   }
