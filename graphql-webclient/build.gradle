@@ -6,4 +6,6 @@ dependencies {
     testImplementation "com.graphql-java-kickstart:graphql-kickstart-spring-boot-starter-webflux:$LIB_GRAPHQL_SPRING_VER"
     testImplementation "com.graphql-java-kickstart:graphql-kickstart-spring-boot-starter-tools:$LIB_GRAPHQL_SPRING_VER"
     testImplementation "com.graphql-java-kickstart:graphql-java-tools:$LIB_GRAPHQL_TOOLS_VER"
+    testImplementation "com.graphql-java-kickstart:graphql-kickstart-spring-support:$LIB_GRAPHQL_SPRING_VER"
+    testImplementation "com.graphql-java-kickstart:graphql-java-kickstart:$LIB_GRAPHQL_SERVLET_VER"
 }

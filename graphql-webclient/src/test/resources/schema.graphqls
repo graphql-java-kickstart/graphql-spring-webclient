@@ -4,6 +4,7 @@ type Query {
     echo(value: String!): String!
     simple(id: ID!): Simple!
     list: [Simple!]!
+    header(name: String!): String
 }
 
 type Simple {

@@ -1,14 +1,21 @@
 package graphql.kickstart.spring.webclient.boot;
 
-import lombok.Builder;
-import lombok.Value;
+import org.springframework.http.HttpHeaders;
 
-@Value
-@Builder
-class GraphQLRequest {
+public interface GraphQLRequest<T> {
 
-  String query;
-  Object variables;
-  String operationName;
+  static GraphQLRequestBuilder<Object> builder() {
+    return new GraphQLRequestBuilder<>(Object.class);
+  }
+
+  static <T> GraphQLRequestBuilder<T> builder(Class<T> returnType) {
+    return new GraphQLRequestBuilder<>(returnType);
+  }
+
+  GraphQLRequestBody getRequestBody();
+
+  HttpHeaders getHeaders();
+
+  Class<T> getReturnType();
 
 }
