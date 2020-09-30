@@ -20,17 +20,17 @@ public class GraphQLRequestBuilder<T> {
     this.returnType = returnType;
   }
 
-  GraphQLRequestBuilder<T> header(String name, String value) {
+  public GraphQLRequestBuilder<T> header(String name, String value) {
     headers.add(name, value);
     return this;
   }
 
-  GraphQLRequestBuilder<T> header(String name, String... values) {
+  public GraphQLRequestBuilder<T> header(String name, String... values) {
     headers.addAll(name, Arrays.asList(values));
     return this;
   }
 
-  GraphQLRequestBuilder<T> resource(String resource) {
+  public GraphQLRequestBuilder<T> resource(String resource) {
     return query(loadQuery(resource));
   }
 
@@ -45,22 +45,22 @@ public class GraphQLRequestBuilder<T> {
     }
   }
 
-  GraphQLRequestBuilder<T> query(String query) {
+  public GraphQLRequestBuilder<T> query(String query) {
     bodyBuilder.query(query);
     return this;
   }
 
-  GraphQLRequestBuilder<T> variables(Object variables) {
+  public GraphQLRequestBuilder<T> variables(Object variables) {
     bodyBuilder.variables(variables);
     return this;
   }
 
-  GraphQLRequestBuilder<T> operationName(String operationName) {
+  public GraphQLRequestBuilder<T> operationName(String operationName) {
     bodyBuilder.operationName(operationName);
     return this;
   }
 
-  GraphQLRequest<T> build() {
+  public GraphQLRequest<T> build() {
     return new GraphQLRequestImpl<>(headers, bodyBuilder.build(), returnType);
   }
 
