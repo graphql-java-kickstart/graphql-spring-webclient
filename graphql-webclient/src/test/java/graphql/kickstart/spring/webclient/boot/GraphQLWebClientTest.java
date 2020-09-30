@@ -67,6 +67,19 @@ class GraphQLWebClientTest {
   }
 
   @Test
+  void simpleTypeAsRequestSucceeds() {
+    GraphQLRequest<Simple> request = GraphQLRequest.builder(Simple.class)
+        .resource("query-simple.graphql")
+        .variables(Map.of("id", "my-id"))
+        .build();
+    Mono<Simple> response = graphqlClient.post(request);
+    assertNotNull("response should not be null", response);
+    Simple object = response.block();
+    assertNotNull(object);
+    assertEquals("response id should equal 'my-id'", "my-id", object.getId());
+  }
+
+  @Test
   void errorResponseSucceeds() {
     Mono<String> response = graphqlClient.post("error.graphql", String.class);
     assertThrows(GraphQLErrorsException.class, response::block);
@@ -85,6 +98,18 @@ class GraphQLWebClientTest {
     List<Simple> list = response.collectList().block();
     assertNotNull(list);
     assertEquals(1, list.size());
+  }
+
+  @Test
+  void headerIsAdded() {
+    GraphQLRequest<String> request = GraphQLRequest.builder(String.class)
+        .resource("query-header.graphql")
+        .variables(Map.of("name", "my-custom-header"))
+        .header("my-custom-header", "my-custom-header-value")
+        .build();
+    Mono<String> response = graphqlClient.post(request);
+    assertNotNull("response should not be null", response);
+    assertEquals("response should equal 'my-custom-header-value'", "my-custom-header-value", response.block());
   }
 
 }

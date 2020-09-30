@@ -1,18 +1,12 @@
 package graphql.kickstart.spring.webclient.boot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,15 +34,9 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
     return objectMapper.convertValue(value, returnType);
   }
 
-  @SneakyThrows
-  private String loadQuery(String path) {
-    return loadResource(new ClassPathResource(path));
-  }
-
-  private String loadResource(Resource resource) throws IOException {
-    try (InputStream inputStream = resource.getInputStream()) {
-      return StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-    }
+  @Override
+  public <T> Mono<T> post(GraphQLRequest<T> request) {
+    return execute(request).map(it -> readValue(it, request.getReturnType()));
   }
 
   @Override
@@ -66,15 +54,28 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
         .map(it -> readValue(it, returnType));
   }
 
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T> Flux<T> flux(GraphQLRequest<T> request) {
+    Mono<Object> responseObject = execute(request);
+    return responseObject.map(List.class::cast)
+        .flatMapMany(Flux::fromIterable)
+        .map(it -> readValue(it, request.getReturnType()));
+  }
+
   private Mono<Object> execute(String resource, Map<String, Object> variables) {
-    GraphQLRequest request = GraphQLRequest.builder()
-        .query(loadQuery(resource))
+    GraphQLRequest<?> request = GraphQLRequest.builder(Object.class)
+        .resource(resource)
         .variables(variables)
         .build();
+    return execute(request);
+  }
 
-    return webClient.post()
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(request)
+  private Mono<Object> execute(GraphQLRequest<?> request) {
+    WebClient.RequestBodySpec spec = webClient.post()
+        .contentType(MediaType.APPLICATION_JSON);
+    request.getHeaders().forEach((header, values) -> spec.header(header, values.toArray(new String[0])));
+    return spec.bodyValue(request.getRequestBody())
         .retrieve()
         .bodyToMono(GraphQLResponse.class)
         .flatMap(it -> Mono.justOrEmpty(it.getFirstObject()));
