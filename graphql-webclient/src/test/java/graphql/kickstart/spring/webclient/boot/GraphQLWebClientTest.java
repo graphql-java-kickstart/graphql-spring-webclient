@@ -72,11 +72,12 @@ class GraphQLWebClientTest {
         .resource("query-simple.graphql")
         .variables(Map.of("id", "my-id"))
         .build();
-    Mono<Simple> response = graphqlClient.post(request);
+    Mono<GraphQLResponse> response = graphqlClient.post(request);
     assertNotNull("response should not be null", response);
-    Simple object = response.block();
+    GraphQLResponse object = response.block();
     assertNotNull(object);
-    assertEquals("response id should equal 'my-id'", "my-id", object.getId());
+    Map<String,Object> simple = (Map<String, Object>) object.getData().get("simple");
+    assertEquals("response id should equal 'my-id'", "my-id", simple.get("id"));
   }
 
   @Test
@@ -107,9 +108,12 @@ class GraphQLWebClientTest {
         .variables(Map.of("name", "my-custom-header"))
         .header("my-custom-header", "my-custom-header-value")
         .build();
-    Mono<String> response = graphqlClient.post(request);
+    Mono<GraphQLResponse> response = graphqlClient.post(request);
     assertNotNull("response should not be null", response);
-    assertEquals("response should equal 'my-custom-header-value'", "my-custom-header-value", response.block());
+    assertNotNull("response should not be null", response);
+    GraphQLResponse object = response.block();
+    assertNotNull(object);
+    assertEquals("response should equal 'my-custom-header-value'", "my-custom-header-value", object.getData().get("header"));
   }
 
 }

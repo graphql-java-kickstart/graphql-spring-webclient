@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import lombok.Data;
 
 @Data
-class GraphQLResponse {
+public class GraphQLResponse {
 
   private Map<String, Object> data;
   private List<GraphQLError> errors;
