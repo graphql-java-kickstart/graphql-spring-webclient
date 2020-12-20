@@ -3,6 +3,16 @@ plugins {
     id 'net.researchgate.release' version "$LIB_RELEASE_PLUGIN_VER"
     id "org.springframework.boot" version "$LIB_SPRING_BOOT_VER" apply false
     id "com.jfrog.artifactory" version "4.15.1" apply false
+    id "org.sonarqube" version "3.0"
+    id "jacoco"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "graphql-java-kickstart_graphql-spring-webclient"
+        property "sonar.organization", "graphql-java-kickstart"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 subprojects {
@@ -69,6 +79,14 @@ subprojects {
     java {
         withSourcesJar()
         withJavadocJar()
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = false
+            csv.enabled = false
+        }
     }
 
     publishing {
