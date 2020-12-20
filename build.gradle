@@ -19,6 +19,8 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: 'org.sonarqube'
     apply plugin: 'maven-publish'
     apply plugin: "com.jfrog.bintray"
     apply plugin: "io.spring.dependency-management"
