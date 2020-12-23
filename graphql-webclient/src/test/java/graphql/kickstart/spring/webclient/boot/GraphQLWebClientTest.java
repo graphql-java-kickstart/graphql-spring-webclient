@@ -1,10 +1,11 @@
 package graphql.kickstart.spring.webclient.boot;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.testapp.Simple;
 import java.util.List;
@@ -44,40 +45,42 @@ class GraphQLWebClientTest {
   @DisplayName("Query test without variables and returning String")
   void queryWithoutVariablesSucceeds() {
     Mono<String> response = graphqlClient.post("query-test.graphql", null, String.class);
-    assertNotNull("response should not be null", response);
-    assertEquals("response should equal 'test'", "test", response.block());
+    assertNotNull(response, "response should not be null");
+    assertEquals("test", response.block(), "response should equal 'test'");
   }
 
   @Test
   @DisplayName("Query echo with String variable and returning String")
   void echoStringSucceeds() {
-    Mono<String> response = graphqlClient.post("query-echo.graphql", Map.of("value", "echo echo echo"), String.class);
-    assertNotNull("response should not be null", response);
-    assertEquals("response should equal 'echo echo echo'", "echo echo echo", response.block());
+    Mono<String> response = graphqlClient
+        .post("query-echo.graphql", Map.of("value", "echo echo echo"), String.class);
+    assertNotNull(response, "response should not be null");
+    assertEquals("echo echo echo", response.block());
   }
 
   @Test
   @DisplayName("Query simple return type")
   void simpleTypeSucceeds() {
-    Mono<Simple> response = graphqlClient.post("query-simple.graphql", Map.of("id", "my-id"), Simple.class);
-    assertNotNull("response should not be null", response);
+    Mono<Simple> response = graphqlClient
+        .post("query-simple.graphql", Map.of("id", "my-id"), Simple.class);
+    assertNotNull(response, "response should not be null");
     Simple object = response.block();
     assertNotNull(object);
-    assertEquals("response id should equal 'my-id'", "my-id", object.getId());
+    assertEquals("my-id", object.getId(), "response id should equal 'my-id'");
   }
 
   @Test
   void simpleTypeAsRequestSucceeds() {
-    GraphQLRequest<Simple> request = GraphQLRequest.builder(Simple.class)
+    GraphQLRequest request = GraphQLRequest.builder()
         .resource("query-simple.graphql")
         .variables(Map.of("id", "my-id"))
         .build();
     Mono<GraphQLResponse> response = graphqlClient.post(request);
-    assertNotNull("response should not be null", response);
+    assertNotNull(response, "response should not be null");
     GraphQLResponse object = response.block();
     assertNotNull(object);
-    Map<String,Object> simple = (Map<String, Object>) object.getData().get("simple");
-    assertEquals("response id should equal 'my-id'", "my-id", simple.get("id"));
+    JsonNode simple = object.getData().get("simple");
+    assertEquals("my-id", simple.get("id").asText(), "response id should equal 'my-id'");
   }
 
   @Test
@@ -103,17 +106,17 @@ class GraphQLWebClientTest {
 
   @Test
   void headerIsAdded() {
-    GraphQLRequest<String> request = GraphQLRequest.builder(String.class)
+    GraphQLRequest request = GraphQLRequest.builder()
         .resource("query-header.graphql")
         .variables(Map.of("name", "my-custom-header"))
         .header("my-custom-header", "my-custom-header-value")
         .build();
     Mono<GraphQLResponse> response = graphqlClient.post(request);
-    assertNotNull("response should not be null", response);
-    assertNotNull("response should not be null", response);
+    assertNotNull(response, "response should not be null");
     GraphQLResponse object = response.block();
     assertNotNull(object);
-    assertEquals("response should equal 'my-custom-header-value'", "my-custom-header-value", object.getData().get("header"));
+    assertEquals("my-custom-header-value",
+        object.getData().get("header").asText(), "response should equal 'my-custom-header-value'");
   }
 
 }

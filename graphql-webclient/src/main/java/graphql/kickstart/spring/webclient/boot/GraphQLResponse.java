@@ -1,26 +1,86 @@
 package graphql.kickstart.spring.webclient.boot;
 
+import static java.util.Collections.emptyList;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
 import lombok.Data;
 
 @Data
 public class GraphQLResponse {
 
-  private Map<String, Object> data;
-  private List<GraphQLError> errors;
+  private final JsonNode data;
+  private final List<GraphQLError> errors;
+  private final String rawResponse;
+  private final ObjectMapper objectMapper;
 
-  Object getFirstObject() {
-    validateNoErrors();
+  GraphQLResponse(String rawResponse, ObjectMapper objectMapper) {
+    this.rawResponse = rawResponse;
+    this.objectMapper = objectMapper;
 
-    if (data != null && !data.isEmpty()) {
-      return data.entrySet().stream().findFirst().map(Entry::getValue).orElse(null);
+    JsonNode tree = readTree(rawResponse);
+    errors = readErrors(tree);
+    data = tree.get("data");
+  }
+
+  private JsonNode readTree(String rawResponse) {
+    try {
+      return objectMapper.readTree(rawResponse);
+    } catch (JsonProcessingException e) {
+      throw new GraphQLClientException("Cannot read response '" + rawResponse + "'", e);
+    }
+  }
+
+  private List<GraphQLError> readErrors(JsonNode tree) {
+    if (tree.has("errors")) {
+      return objectMapper.convertValue(tree.get("errors"), constructListType(GraphQLError.class));
+    }
+    return emptyList();
+  }
+
+  public <T> T get(String fieldName, Class<T> type) {
+    if (data != null && data.has(fieldName) && data.get(fieldName) != null) {
+      return objectMapper.convertValue(data.get(fieldName), type);
     }
     return null;
   }
 
-  private void validateNoErrors() {
+  public <T> T getFirstObject(Class<T> type) {
+    return getFirstDataEntry().map(it -> objectMapper.convertValue(it, type)).orElse(null);
+  }
+
+  private Optional<JsonNode> getFirstDataEntry() {
+    if (data != null && !data.isEmpty()) {
+      return Optional.ofNullable(data.fields().next().getValue());
+    }
+    return Optional.empty();
+  }
+
+  public <T> List<T> getList(String fieldName, Class<T> type) {
+    if (data.has(fieldName) && data.get(fieldName) != null) {
+      return objectMapper.convertValue(data.get(fieldName), constructListType(type));
+    }
+    return emptyList();
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> List<T> getFirstList(Class<T> type) {
+    return getFirstDataEntry()
+        .map(it -> objectMapper.convertValue(it, constructListType(type)))
+        .map(List.class::cast)
+        .orElseGet(Collections::emptyList);
+  }
+
+  private JavaType constructListType(Class<?> type) {
+    return objectMapper.getTypeFactory().constructCollectionType(List.class, type);
+  }
+
+  public void validateNoErrors() {
     if (errors != null && !errors.isEmpty()) {
       throw new GraphQLErrorsException(errors);
     }

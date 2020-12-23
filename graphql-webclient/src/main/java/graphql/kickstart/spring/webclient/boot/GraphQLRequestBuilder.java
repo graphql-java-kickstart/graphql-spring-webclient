@@ -10,27 +10,25 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StreamUtils;
 
-public class GraphQLRequestBuilder<T> {
+public class GraphQLRequestBuilder {
 
   private final HttpHeaders headers = new HttpHeaders();
   private final GraphQLRequestBody.GraphQLRequestBodyBuilder bodyBuilder = GraphQLRequestBody.builder();
-  private final Class<T> returnType;
 
-  GraphQLRequestBuilder(Class<T> returnType) {
-    this.returnType = returnType;
+  GraphQLRequestBuilder() {
   }
 
-  public GraphQLRequestBuilder<T> header(String name, String value) {
+  public GraphQLRequestBuilder header(String name, String value) {
     headers.add(name, value);
     return this;
   }
 
-  public GraphQLRequestBuilder<T> header(String name, String... values) {
+  public GraphQLRequestBuilder header(String name, String... values) {
     headers.addAll(name, Arrays.asList(values));
     return this;
   }
 
-  public GraphQLRequestBuilder<T> resource(String resource) {
+  public GraphQLRequestBuilder resource(String resource) {
     return query(loadQuery(resource));
   }
 
@@ -45,23 +43,23 @@ public class GraphQLRequestBuilder<T> {
     }
   }
 
-  public GraphQLRequestBuilder<T> query(String query) {
+  public GraphQLRequestBuilder query(String query) {
     bodyBuilder.query(query);
     return this;
   }
 
-  public GraphQLRequestBuilder<T> variables(Object variables) {
+  public GraphQLRequestBuilder variables(Object variables) {
     bodyBuilder.variables(variables);
     return this;
   }
 
-  public GraphQLRequestBuilder<T> operationName(String operationName) {
+  public GraphQLRequestBuilder operationName(String operationName) {
     bodyBuilder.operationName(operationName);
     return this;
   }
 
-  public GraphQLRequest<T> build() {
-    return new GraphQLRequestImpl<>(headers, bodyBuilder.build(), returnType);
+  public GraphQLRequest build() {
+    return new GraphQLRequestImpl(headers, bodyBuilder.build());
   }
 
 }

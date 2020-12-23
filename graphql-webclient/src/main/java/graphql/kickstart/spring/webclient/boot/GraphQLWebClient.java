@@ -16,12 +16,10 @@ public interface GraphQLWebClient {
 
   <T> Mono<T> post(String resource, Map<String, Object> variables, Class<T> returnType);
 
-  Mono<GraphQLResponse> post(GraphQLRequest<?> request);
+  Mono<GraphQLResponse> post(GraphQLRequest request);
 
   <T> Flux<T> flux(String resource, Class<T> returnType);
 
   <T> Flux<T> flux(String resource, Map<String, Object> variables, Class<T> returnType);
 
-  @SuppressWarnings("unchecked")
-  <T> Flux<T> flux(GraphQLRequest<T> request);
 }

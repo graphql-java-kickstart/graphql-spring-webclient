@@ -4,10 +4,9 @@ import lombok.Value;
 import org.springframework.http.HttpHeaders;
 
 @Value
-class GraphQLRequestImpl<T> implements GraphQLRequest<T> {
+class GraphQLRequestImpl implements GraphQLRequest {
 
   HttpHeaders headers;
   GraphQLRequestBody requestBody;
-  Class<T> returnType;
 
 }
