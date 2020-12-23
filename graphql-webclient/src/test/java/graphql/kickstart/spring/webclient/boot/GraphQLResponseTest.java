@@ -31,6 +31,12 @@ class GraphQLResponseTest {
   }
 
   @Test
+  void getErrors_noErrors_returnsEmptyList() {
+    GraphQLResponse response = constructResponse("{ \"data\": null }");
+    assertTrue(response.getErrors().isEmpty());
+  }
+
+  @Test
   void getFieldName_dataIsNull_returnsNull() {
     GraphQLResponse response = constructResponse("{ \"data\": null }");
     assertNull(response.get("test", String.class));

@@ -41,7 +41,7 @@ public class GraphQLResponse {
   }
 
   private List<GraphQLError> readErrors(JsonNode tree) {
-    if (tree.has(ERRORS_FIELD) && tree.get(ERRORS_FIELD) != null) {
+    if (tree.hasNonNull(ERRORS_FIELD)) {
       return convertList(tree.get(ERRORS_FIELD), GraphQLError.class);
     }
     return emptyList();
@@ -56,7 +56,7 @@ public class GraphQLResponse {
   }
 
   public <T> T get(String fieldName, Class<T> type) {
-    if (data != null && data.has(fieldName) && data.get(fieldName) != null) {
+    if (data != null && data.hasNonNull(fieldName)) {
       return objectMapper.convertValue(data.get(fieldName), type);
     }
     return null;
@@ -74,7 +74,7 @@ public class GraphQLResponse {
   }
 
   public <T> List<T> getList(String fieldName, Class<T> type) {
-    if (data != null && data.has(fieldName) && data.get(fieldName) != null) {
+    if (data != null && data.hasNonNull(fieldName)) {
       return convertList(data.get(fieldName), type);
     }
     return emptyList();
