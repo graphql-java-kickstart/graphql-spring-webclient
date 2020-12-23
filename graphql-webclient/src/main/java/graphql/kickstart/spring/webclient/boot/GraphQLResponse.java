@@ -14,6 +14,8 @@ import lombok.Data;
 @Data
 public class GraphQLResponse {
 
+  public static final String ERRORS_FIELD = "errors";
+
   private final JsonNode data;
   private final List<GraphQLError> errors;
   private final String rawResponse;
@@ -25,7 +27,7 @@ public class GraphQLResponse {
 
     JsonNode tree = readTree(rawResponse);
     errors = readErrors(tree);
-    data = tree.get("data");
+    data = tree.hasNonNull("data") ? tree.get("data") : null;
   }
 
   private JsonNode readTree(String rawResponse) {
@@ -37,10 +39,18 @@ public class GraphQLResponse {
   }
 
   private List<GraphQLError> readErrors(JsonNode tree) {
-    if (tree.has("errors")) {
-      return objectMapper.convertValue(tree.get("errors"), constructListType(GraphQLError.class));
+    if (tree.has(ERRORS_FIELD) && tree.get(ERRORS_FIELD) != null) {
+      return convertList(tree.get(ERRORS_FIELD), GraphQLError.class);
     }
     return emptyList();
+  }
+
+  private <T> List<T> convertList(JsonNode node, Class<T> type) {
+    return objectMapper.convertValue(node, constructListType(type));
+  }
+
+  private JavaType constructListType(Class<?> type) {
+    return objectMapper.getTypeFactory().constructCollectionType(List.class, type);
   }
 
   public <T> T get(String fieldName, Class<T> type) {
@@ -62,8 +72,8 @@ public class GraphQLResponse {
   }
 
   public <T> List<T> getList(String fieldName, Class<T> type) {
-    if (data.has(fieldName) && data.get(fieldName) != null) {
-      return objectMapper.convertValue(data.get(fieldName), constructListType(type));
+    if (data != null && data.has(fieldName) && data.get(fieldName) != null) {
+      return convertList(data.get(fieldName), type);
     }
     return emptyList();
   }
@@ -71,17 +81,13 @@ public class GraphQLResponse {
   @SuppressWarnings("unchecked")
   public <T> List<T> getFirstList(Class<T> type) {
     return getFirstDataEntry()
-        .map(it -> objectMapper.convertValue(it, constructListType(type)))
+        .map(it -> convertList(it, type))
         .map(List.class::cast)
         .orElseGet(Collections::emptyList);
   }
 
-  private JavaType constructListType(Class<?> type) {
-    return objectMapper.getTypeFactory().constructCollectionType(List.class, type);
-  }
-
   public void validateNoErrors() {
-    if (errors != null && !errors.isEmpty()) {
+    if (!errors.isEmpty()) {
       throw new GraphQLErrorsException(errors);
     }
   }
