@@ -1,6 +1,7 @@
 # GraphQL Spring Webclient
-[![Build Status](https://travis-ci.org/graphql-java-kickstart/graphql-spring-webclient.svg?branch=master)](https://travis-ci.org/graphql-java-kickstart/graphql-spring-webclient)
 [![Maven Central](https://img.shields.io/maven-central/v/com.graphql-java-kickstart/graphql-webclient-spring-boot-starter.svg)](https://maven-badges.herokuapp.com/maven-central/com.graphql-java-kickstart/graphql-webclient-spring-boot-starter)
+[![Build Status](https://travis-ci.org/graphql-java-kickstart/graphql-spring-webclient.svg?branch=master)](https://travis-ci.org/graphql-java-kickstart/graphql-spring-webclient)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=graphql-java-kickstart_graphql-spring-webclient&metric=alert_status)](https://sonarcloud.io/dashboard?id=graphql-java-kickstart_graphql-spring-webclient)
 
 Reactive GraphQL client for consuming GraphQL APIs from a Spring Boot application.
 Provides OAuth2 authorization through configuration.
