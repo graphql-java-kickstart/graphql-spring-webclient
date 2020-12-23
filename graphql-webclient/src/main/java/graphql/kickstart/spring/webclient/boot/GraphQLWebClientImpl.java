@@ -35,8 +35,13 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
   }
 
   @Override
-  public <T> Mono<T> post(GraphQLRequest<T> request) {
-    return execute(request).map(it -> readValue(it, request.getReturnType()));
+  public Mono<GraphQLResponse> post(GraphQLRequest<?> request) {
+    WebClient.RequestBodySpec spec = webClient.post()
+            .contentType(MediaType.APPLICATION_JSON);
+    request.getHeaders().forEach((header, values) -> spec.header(header, values.toArray(new String[0])));
+    return spec.bodyValue(request.getRequestBody())
+            .retrieve()
+            .bodyToMono(GraphQLResponse.class);
   }
 
   @Override
