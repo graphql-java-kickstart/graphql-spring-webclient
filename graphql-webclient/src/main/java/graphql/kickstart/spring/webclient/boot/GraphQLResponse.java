@@ -9,10 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@EqualsAndHashCode
 public class GraphQLResponse {
 
   public static final String ERRORS_FIELD = "errors";
@@ -20,11 +18,9 @@ public class GraphQLResponse {
   private final JsonNode data;
   @Getter
   private final List<GraphQLError> errors;
-  private final String rawResponse;
   private final ObjectMapper objectMapper;
 
   GraphQLResponse(String rawResponse, ObjectMapper objectMapper) {
-    this.rawResponse = rawResponse;
     this.objectMapper = objectMapper;
 
     JsonNode tree = readTree(rawResponse);
