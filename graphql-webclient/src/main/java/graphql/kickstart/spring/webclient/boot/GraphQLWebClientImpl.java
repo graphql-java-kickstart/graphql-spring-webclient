@@ -26,7 +26,7 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
     return post(resource, variables)
         .flatMap(it -> {
           it.validateNoErrors();
-          return Mono.justOrEmpty(it.getFirstObject(returnType));
+          return Mono.justOrEmpty(it.getFirst(returnType));
         });
   }
 

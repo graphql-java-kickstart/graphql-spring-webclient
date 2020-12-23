@@ -9,14 +9,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
+@EqualsAndHashCode
 public class GraphQLResponse {
 
   public static final String ERRORS_FIELD = "errors";
 
   private final JsonNode data;
+  @Getter
   private final List<GraphQLError> errors;
   private final String rawResponse;
   private final ObjectMapper objectMapper;
@@ -60,7 +62,7 @@ public class GraphQLResponse {
     return null;
   }
 
-  public <T> T getFirstObject(Class<T> type) {
+  public <T> T getFirst(Class<T> type) {
     return getFirstDataEntry().map(it -> objectMapper.convertValue(it, type)).orElse(null);
   }
 

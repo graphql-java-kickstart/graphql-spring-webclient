@@ -60,19 +60,18 @@ class GraphQLResponseTest {
   @Test
   void getFirstObject_dataIsNull_returnsNull() {
     GraphQLResponse response = constructResponse("{ \"data\": null }");
-    assertNull(response.getFirstObject(String.class));
+    assertNull(response.getFirst(String.class));
   }
 
   @Test
   void getFirstObject_notDataFieldExists_returnsNull() {
     GraphQLResponse response = constructResponse("{ \"data\": { \"field\": null } }");
-    assertNull(response.getFirstObject(String.class));
+    assertNull(response.getFirst(String.class));
   }
 
   @Test
   void getList_dataIsNull_returnsEmptyList() {
     GraphQLResponse response = constructResponse("{ \"data\": null }");
-    assertNull(response.getData());
     assertTrue(response.getList("test", String.class).isEmpty());
   }
 

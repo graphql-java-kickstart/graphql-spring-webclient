@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.testapp.Simple;
 import java.util.List;
@@ -79,8 +78,8 @@ class GraphQLWebClientTest {
     assertNotNull(response, "response should not be null");
     GraphQLResponse object = response.block();
     assertNotNull(object);
-    JsonNode simple = object.getData().get("simple");
-    assertEquals("my-id", simple.get("id").asText(), "response id should equal 'my-id'");
+    Simple simple = object.get("simple", Simple.class);
+    assertEquals("my-id", simple.getId(), "response id should equal 'my-id'");
   }
 
   @Test
@@ -116,7 +115,7 @@ class GraphQLWebClientTest {
     GraphQLResponse object = response.block();
     assertNotNull(object);
     assertEquals("my-custom-header-value",
-        object.getData().get("header").asText(), "response should equal 'my-custom-header-value'");
+        object.get("header", String.class), "response should equal 'my-custom-header-value'");
   }
 
 }
