@@ -16,7 +16,7 @@ public interface GraphQLWebClient {
 
   <T> Mono<T> post(String resource, Map<String, Object> variables, Class<T> returnType);
 
-  <T> Mono<T> post(GraphQLRequest<T> request);
+  Mono<GraphQLResponse> post(GraphQLRequest<?> request);
 
   <T> Flux<T> flux(String resource, Class<T> returnType);
 
