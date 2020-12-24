@@ -1,6 +1,6 @@
 # GraphQL Spring Webclient
 [![Maven Central](https://img.shields.io/maven-central/v/com.graphql-java-kickstart/graphql-webclient-spring-boot-starter.svg)](https://maven-badges.herokuapp.com/maven-central/com.graphql-java-kickstart/graphql-webclient-spring-boot-starter)
-[![GitHub Snapshot Workflow](https://github.com/graphql-java-kickstart/graphql-spring-webclient/workflows/snapshot/badge.svg)](https://github.com/graphql-java-kickstart/graphql-spring-webclient/actions?query=workflow%3Asnapshot+branch%3Amaster)
+![Publish snapshot](https://github.com/graphql-java-kickstart/graphql-spring-webclient/workflows/Publish%20snapshot/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=graphql-java-kickstart_graphql-spring-webclient&metric=alert_status)](https://sonarcloud.io/dashboard?id=graphql-java-kickstart_graphql-spring-webclient)
 
 Reactive GraphQL client for consuming GraphQL APIs from a Spring Boot application.
