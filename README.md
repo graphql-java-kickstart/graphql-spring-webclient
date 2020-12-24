@@ -44,10 +44,10 @@ class MyClass {
     this.graphQLWebClient = graphQLWebClient;
   }
   
-  void executeSomeQuery() {
+  String helloWorld() {
     GraphQLRequest request = GraphQLRequest.builder().query("query { hello }").build();
     GraphQLResponse response = graphQLWebClient.post(request).block();
-    String value = response.get("hello", String.class);
+    return response.get("hello", String.class);
   }
 }
 ```
