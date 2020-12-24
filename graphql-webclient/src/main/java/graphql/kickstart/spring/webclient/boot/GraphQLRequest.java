@@ -2,20 +2,14 @@ package graphql.kickstart.spring.webclient.boot;
 
 import org.springframework.http.HttpHeaders;
 
-public interface GraphQLRequest<T> {
+public interface GraphQLRequest {
 
-  static GraphQLRequestBuilder<Object> builder() {
-    return new GraphQLRequestBuilder<>(Object.class);
-  }
-
-  static <T> GraphQLRequestBuilder<T> builder(Class<T> returnType) {
-    return new GraphQLRequestBuilder<>(returnType);
+  static GraphQLRequestBuilder builder() {
+    return new GraphQLRequestBuilder();
   }
 
   GraphQLRequestBody getRequestBody();
 
   HttpHeaders getHeaders();
-
-  Class<T> getReturnType();
 
 }

@@ -15,13 +15,13 @@ When using Maven:
 <dependency>
   <groupId>com.graphql-java-kickstart</groupId>
   <artifactId>graphql-webclient-spring-boot-starter</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
 When using gradle:
 ```groovy
-implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:0.2.0"
+implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:0.3.0"
 ```
 
 Configure at least the URL of the GraphQL API to consume:
@@ -29,6 +29,27 @@ Configure at least the URL of the GraphQL API to consume:
 graphql:
   client:
     url: https://graphql.github.com/graphql
+```
+
+The starter creates a Spring bean of type `GraphQLWebClient` that you can use in your
+classes to send queries. A simplified example might look like this:
+
+```java
+@Component
+class MyClass {
+  
+  private final GraphQLWebClient graphQLWebClient;
+  
+  MyClass(GraphQLWebClient graphQLWebClient) {
+    this.graphQLWebClient = graphQLWebClient;
+  }
+  
+  void executeSomeQuery() {
+    GraphQLRequest request = GraphQLRequest.builder().query("query { hello }").build();
+    GraphQLResponse response = graphQLWebClient.post(request).block();
+    String value = response.get("hello", String.class);
+  }
+}
 ```
 
 ### Using latest Snapshots
