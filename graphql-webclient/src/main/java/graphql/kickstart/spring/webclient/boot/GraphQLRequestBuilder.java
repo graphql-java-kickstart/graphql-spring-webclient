@@ -18,11 +18,6 @@ public class GraphQLRequestBuilder {
   GraphQLRequestBuilder() {
   }
 
-  public GraphQLRequestBuilder header(String name, String value) {
-    headers.add(name, value);
-    return this;
-  }
-
   public GraphQLRequestBuilder header(String name, String... values) {
     headers.addAll(name, Arrays.asList(values));
     return this;

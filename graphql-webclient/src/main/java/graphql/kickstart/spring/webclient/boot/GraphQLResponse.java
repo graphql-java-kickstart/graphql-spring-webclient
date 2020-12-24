@@ -25,7 +25,7 @@ public class GraphQLResponse {
 
     JsonNode tree = readTree(rawResponse);
     errors = readErrors(tree);
-    data = tree.hasNonNull("data") ? tree.get("data") : null;
+    data = tree.get("data");
   }
 
   private JsonNode readTree(String rawResponse) {
@@ -52,7 +52,7 @@ public class GraphQLResponse {
   }
 
   public <T> T get(String fieldName, Class<T> type) {
-    if (data != null && data.hasNonNull(fieldName)) {
+    if (data.hasNonNull(fieldName)) {
       return objectMapper.convertValue(data.get(fieldName), type);
     }
     return null;
@@ -63,14 +63,14 @@ public class GraphQLResponse {
   }
 
   private Optional<JsonNode> getFirstDataEntry() {
-    if (data != null && !data.isEmpty()) {
+    if (!data.isEmpty()) {
       return Optional.ofNullable(data.fields().next().getValue());
     }
     return Optional.empty();
   }
 
   public <T> List<T> getList(String fieldName, Class<T> type) {
-    if (data != null && data.hasNonNull(fieldName)) {
+    if (data.hasNonNull(fieldName)) {
       return convertList(data.get(fieldName), type);
     }
     return emptyList();
