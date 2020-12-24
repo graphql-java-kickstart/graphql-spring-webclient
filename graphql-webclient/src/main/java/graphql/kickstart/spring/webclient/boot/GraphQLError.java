@@ -10,6 +10,6 @@ public class GraphQLError {
   private String message;
   private List<Location> locations;
   private List<String> path;
-  private Map<String, Object> extensions  ;
+  private Map<String, Object> extensions;
 
 }

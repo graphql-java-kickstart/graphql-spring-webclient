@@ -10,7 +10,7 @@ import lombok.Value;
 @RequiredArgsConstructor
 public class GraphQLErrorsException extends RuntimeException {
 
-  List<GraphQLError> errors;
+  transient List<GraphQLError> errors;
 
   @Override
   public String getMessage() {
