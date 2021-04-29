@@ -113,7 +113,6 @@ subprojects {
                 }
 
                 pom {
-                    resolveStrategy = DELEGATE_FIRST
                     name = PROJECT_NAME
                     description = PROJECT_DESC
                     url = PROJECT_GIT_REPO_URL
