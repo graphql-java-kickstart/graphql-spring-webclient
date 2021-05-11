@@ -1,5 +1,5 @@
 {
   "extends": [
-    "config:base"
+    "github>graphql-java-kickstart/renovate-config"
   ]
 }
