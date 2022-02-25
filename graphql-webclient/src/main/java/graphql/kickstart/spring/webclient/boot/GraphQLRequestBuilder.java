@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -12,10 +15,16 @@ import org.springframework.util.StreamUtils;
 
 public class GraphQLRequestBuilder {
 
+  private final Map<String, Object> attributes = new LinkedHashMap<>();
   private final HttpHeaders headers = new HttpHeaders();
   private final GraphQLRequestBody.GraphQLRequestBodyBuilder bodyBuilder = GraphQLRequestBody.builder();
 
   GraphQLRequestBuilder() {
+  }
+
+  public GraphQLRequestBuilder attribute(String name, Object value) {
+    attributes.put(name, value);
+    return this;
   }
 
   public GraphQLRequestBuilder header(String name, String... values) {
@@ -54,7 +63,7 @@ public class GraphQLRequestBuilder {
   }
 
   public GraphQLRequest build() {
-    return new GraphQLRequestImpl(headers, bodyBuilder.build());
+    return new GraphQLRequestImpl(attributes, headers, bodyBuilder.build());
   }
 
 }
