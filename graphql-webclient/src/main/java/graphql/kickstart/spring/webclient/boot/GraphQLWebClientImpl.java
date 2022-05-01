@@ -54,6 +54,13 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
         .flatMapMany(Flux::fromIterable);
   }
 
+  @Override
+  public <T> Flux<T> flux(GraphQLRequest request, Class<T> returnType) {
+    return post(request)
+            .map(it -> it.getFirstList(returnType))
+            .flatMapMany(Flux::fromIterable);
+  }
+
   private Mono<GraphQLResponse> post(String resource, Map<String, Object> variables) {
     GraphQLRequest request = GraphQLRequest.builder()
         .resource(resource)
