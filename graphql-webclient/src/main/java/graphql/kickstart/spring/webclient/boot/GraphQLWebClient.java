@@ -22,4 +22,6 @@ public interface GraphQLWebClient {
 
   <T> Flux<T> flux(String resource, Map<String, Object> variables, Class<T> returnType);
 
+  <T> Flux<T> flux(GraphQLRequest request, Class<T> returnType);
+
 }

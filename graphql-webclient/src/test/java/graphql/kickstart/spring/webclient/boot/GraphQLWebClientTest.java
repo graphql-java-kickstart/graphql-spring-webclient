@@ -104,6 +104,15 @@ class GraphQLWebClientTest {
   }
 
   @Test
+  void listSucceedsWithGraphQLRequest() {
+    GraphQLRequest request = GraphQLRequest.builder().resource("query-list.graphql").build();
+    Flux<Simple> response = graphqlClient.flux(request, Simple.class);
+    List<Simple> list = response.collectList().block();
+    assertNotNull(list);
+    assertEquals(1, list.size());
+  }
+
+  @Test
   void headerIsAdded() {
     GraphQLRequest request = GraphQLRequest.builder()
         .resource("query-header.graphql")
