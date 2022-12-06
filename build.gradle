@@ -5,7 +5,7 @@ plugins {
     id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
-sonarqube {
+sonar {
     properties {
         property "sonar.projectKey", "graphql-java-kickstart_graphql-spring-webclient"
         property "sonar.organization", "graphql-java-kickstart"
@@ -58,8 +58,8 @@ subprojects {
     }
 
     compileJava {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     compileJava.dependsOn(processResources)
