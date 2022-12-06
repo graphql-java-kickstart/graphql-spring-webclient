@@ -39,7 +39,7 @@ class OAuth2ClientRegistrationProperties {
       ClientRegistration.Builder builder = ClientRegistration.withRegistrationId("graphql")
           .clientId(getClientId())
           .clientSecret(getClientSecret())
-          .redirectUriTemplate(getRedirectUri())
+          .redirectUri(getRedirectUri())
           .scope(getScope())
           .clientName(getClientName())
           .authorizationUri(getAuthorizationUri())
