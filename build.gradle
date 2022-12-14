@@ -23,8 +23,6 @@ subprojects {
     apply plugin: 'signing'
     apply plugin: "io.spring.dependency-management"
 
-    group  "$PROJECT_GROUP"
-
     repositories {
         mavenLocal()
         mavenCentral()
