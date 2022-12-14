@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-graphql.kickstart.spring.webclient.boot.GraphQLWebClientAutoConfiguration,\
-graphql.kickstart.spring.webclient.boot.OAuth2ClientRegistrationRepositoryConfiguration
