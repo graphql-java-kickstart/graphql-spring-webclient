@@ -18,13 +18,13 @@ When using Maven:
 <dependency>
   <groupId>com.graphql-java-kickstart</groupId>
   <artifactId>graphql-webclient-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 When using gradle:
 ```groovy
-implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:1.0.0"
+implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:2.0.0"
 ```
 
 Configure at least the URL of the GraphQL API to consume:
