@@ -2,7 +2,7 @@ plugins {
     id "org.springframework.boot" version "$LIB_SPRING_BOOT_VER" apply false
     id "org.sonarqube" version "3.5.0.2730"
     id "jacoco"
-    id 'io.codearte.nexus-staging' version '0.30.0'
+    id "io.github.gradle-nexus.publish-plugin" version '1.1.0'
 }
 
 sonar {
@@ -154,9 +154,13 @@ subprojects {
     }
 }
 
-nexusStaging {
-    username = System.env.OSS_USER_TOKEN_KEY ?: project.findProperty('OSS_USER_TOKEN_KEY') ?: ''
-    password = System.env.OSS_USER_TOKEN_PASS ?: project.findProperty('OSS_USER_TOKEN_PASS') ?: ''
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = System.env.OSS_USER_TOKEN_KEY ?: project.findProperty('OSS_USER_TOKEN_KEY') ?: ''
+            password = System.env.OSS_USER_TOKEN_PASS ?: project.findProperty('OSS_USER_TOKEN_PASS') ?: ''
+        }
+    }
 }
 
 wrapper {
