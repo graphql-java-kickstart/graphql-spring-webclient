@@ -14,7 +14,7 @@ class OAuth2ClientRegistrationRepositoryConfiguration {
 
   @Bean
   @ConditionalOnMissingBean({ReactiveClientRegistrationRepository.class})
-  InMemoryReactiveClientRegistrationRepository clientRegistrationRepository(
+  InMemoryReactiveClientRegistrationRepository reactiveClientRegistrationRepository(
       OAuth2ClientRegistrationProperties properties) {
     return properties
         .getClientRegistration()

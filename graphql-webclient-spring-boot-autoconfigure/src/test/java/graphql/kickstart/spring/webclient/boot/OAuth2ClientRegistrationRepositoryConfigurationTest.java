@@ -18,7 +18,7 @@ class OAuth2ClientRegistrationRepositoryConfigurationTest {
   @Test
   void clientRegistrationRepository_nullRegistration_returnsNull() {
     var properties = new OAuth2ClientRegistrationProperties();
-    var repository = configuration.clientRegistrationRepository(properties);
+    var repository = configuration.reactiveClientRegistrationRepository(properties);
     assertNull(repository);
   }
 
@@ -37,7 +37,7 @@ class OAuth2ClientRegistrationRepositoryConfigurationTest {
     properties.setProvider("provider");
     properties.setUserNameAttribute("username-attribute");
     properties.setIssuerUri("issuer-uri");
-    var repository = configuration.clientRegistrationRepository(properties);
+    var repository = configuration.reactiveClientRegistrationRepository(properties);
     assertNotNull(repository);
   }
 
