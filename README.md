@@ -73,7 +73,15 @@ should be defined as `graphql.client.url` in your Spring Boot configuration file
 | `oauth2.client-secret` | OAuth2 client secret |
 | `oauth2.token-uri` | Token URI of the identity provider |
 | `oauth2.authorization-grant-type` | By default the grant type `client_credentials` is used |
- 
+| `retry.strategy` | The retry strategy to auto configure for the `WebClient` _(possible values are `none`, `backoff`, `fixed_delay`, `indefinitely`, `max` and `max_in_row`)_. Default is `none`. |
+| `retry.backoff.max-attempts` | The maximum number of retry attempts to allow _(only used when `retry.strategy` = `backoff`)_. |
+| `retry.backoff.min-backoff` | The minimum duration for the first backoff _(only used when `retry.strategy` = `backoff`)_. Default is `0`. |
+| `retry.backoff.max-backoff` | The maximum duration for the exponential backoffs _(only used when `retry.strategy` = `backoff`)_. Default is `Duration.ofMillis(Long.MAX_VALUE)`. |
+| `retry.fixed-delay.max-attempts` | The maximum number of retry attempts to allow _(only used when `retry.strategy` = `fixed_delay`)_. |
+| `retry.fixed-delay.delay` | The duration of the fixed delays between attempts _(only used when `retry.strategy` = `fixed_delay`)_. |
+| `retry.max.max-attempts` | The maximum number of retry attempts to allow _(only used when `retry.strategy` = `max`)_. |
+| `retry.max-in-row.max-attempts` | The maximum number of retry attempts to allow in a row _(only used when `retry.strategy` = `max_in_row`)_. |
+
 ### Max in memory size
 
 In case you need to work with large responses you might run into the following error:
