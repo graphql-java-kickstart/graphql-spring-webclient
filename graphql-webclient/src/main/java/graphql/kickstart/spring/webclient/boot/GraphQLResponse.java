@@ -15,12 +15,15 @@ public class GraphQLResponse {
 
   public static final String ERRORS_FIELD = "errors";
 
+  @Getter
+  private final String rawResponse;
   private final JsonNode data;
   @Getter
   private final List<GraphQLError> errors;
   private final ObjectMapper objectMapper;
 
   GraphQLResponse(String rawResponse, ObjectMapper objectMapper) {
+    this.rawResponse = rawResponse;
     this.objectMapper = objectMapper;
 
     JsonNode tree = readTree(rawResponse);

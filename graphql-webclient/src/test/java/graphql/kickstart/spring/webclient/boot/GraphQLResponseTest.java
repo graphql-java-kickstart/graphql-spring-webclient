@@ -95,4 +95,10 @@ class GraphQLResponseTest {
     assertEquals("value", values.get(0));
   }
 
+  @Test
+  void getRawResponse() {
+    GraphQLResponse response = constructResponse("{ \"data\": null }");
+    assertEquals("{ \"data\": null }", response.getRawResponse());
+  }
+
 }
