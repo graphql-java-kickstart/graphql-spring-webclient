@@ -6,6 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.JsonPathException;
+import com.jayway.jsonpath.ReadContext;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +25,8 @@ public class GraphQLResponse {
   @Getter
   private final List<GraphQLError> errors;
   private final ObjectMapper objectMapper;
+
+  private ReadContext readContext;
 
   GraphQLResponse(String rawResponse, ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
@@ -58,6 +66,14 @@ public class GraphQLResponse {
     return null;
   }
 
+  public <T> T getAt(String path, Class<T> type) throws GraphQLResponseReadException {
+    try {
+      return getReadContext().read(path, type);
+    } catch (JsonPathException e) {
+      throw new GraphQLResponseReadException("Failed to read part of GraphQL response.", e);
+    }
+  }
+
   public <T> T getFirst(Class<T> type) {
     return getFirstDataEntry().map(it -> objectMapper.convertValue(it, type)).orElse(null);
   }
@@ -76,6 +92,10 @@ public class GraphQLResponse {
     return emptyList();
   }
 
+  public <T> List<T> getListAt(String path, Class<T> itemType) throws GraphQLResponseReadException {
+    return objectMapper.convertValue(getAt(path), constructListType(itemType));
+  }
+
   @SuppressWarnings("unchecked")
   public <T> List<T> getFirstList(Class<T> type) {
     return getFirstDataEntry()
@@ -84,10 +104,28 @@ public class GraphQLResponse {
         .orElseGet(Collections::emptyList);
   }
 
+  public <T> T getAt(String path) throws GraphQLResponseReadException {
+    try {
+      return getReadContext().read(path);
+    } catch (JsonPathException e) {
+      throw new GraphQLResponseReadException("Failed to read part of GraphQL response.", e);
+    }
+  }
+
   public void validateNoErrors() {
     if (!errors.isEmpty()) {
       throw new GraphQLErrorsException(errors);
     }
+  }
+
+  public ReadContext getReadContext() {
+    if (readContext == null) {
+        Configuration.builder()
+            .mappingProvider(new JacksonMappingProvider(objectMapper))
+            .build();
+      readContext = JsonPath.parse(data.toString());
+    }
+    return readContext;
   }
 
 }
