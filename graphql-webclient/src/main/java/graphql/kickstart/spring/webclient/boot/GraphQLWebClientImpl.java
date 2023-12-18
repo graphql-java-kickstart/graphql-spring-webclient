@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
 
   private final WebClient webClient;
   private final ObjectMapper objectMapper;
+  private final Retry retry;
 
   @Override
   public <T> Mono<T> post(String resource, Class<T> returnType) {
@@ -23,15 +25,44 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
 
   @Override
   public <T> Mono<T> post(String resource, Map<String, Object> variables, Class<T> returnType) {
-    return post(resource, variables)
-        .flatMap(it -> {
-          it.validateNoErrors();
-          return Mono.justOrEmpty(it.getFirst(returnType));
-        });
+    return tryRetry(
+      post(resource, variables)
+          .flatMap(it -> {
+            it.validateNoErrors();
+            return Mono.justOrEmpty(it.getFirst(returnType));
+          })
+    );
   }
 
   @Override
   public Mono<GraphQLResponse> post(GraphQLRequest request) {
+    return tryRetry(postWithoutRetry(request));
+  }
+
+  @Override
+  public <T> Flux<T> flux(String resource, Class<T> returnType) {
+    return flux(resource, null, returnType);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T> Flux<T> flux(String resource, Map<String, Object> variables, Class<T> returnType) {
+    return tryRetry(
+      post(resource, variables)
+          .map(it -> it.getFirstList(returnType))
+          .flatMapMany(Flux::fromIterable)
+    );
+  }
+
+  private Mono<GraphQLResponse> post(String resource, Map<String, Object> variables) {
+    GraphQLRequest request = GraphQLRequest.builder()
+        .resource(resource)
+        .variables(variables)
+        .build();
+    return postWithoutRetry(request);
+  }
+
+  private Mono<GraphQLResponse> postWithoutRetry(GraphQLRequest request) {
     WebClient.RequestBodySpec spec = webClient.post().contentType(MediaType.APPLICATION_JSON);
     request.getAttributes()
         .forEach(spec::attribute);
@@ -43,25 +74,12 @@ class GraphQLWebClientImpl implements GraphQLWebClient {
         .map(it -> new GraphQLResponse(it, objectMapper));
   }
 
-  @Override
-  public <T> Flux<T> flux(String resource, Class<T> returnType) {
-    return flux(resource, null, returnType);
+  private <T> Mono<T> tryRetry(Mono<T> publisher) {
+    return (retry == null ? publisher : publisher.retryWhen(retry));
   }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> Flux<T> flux(String resource, Map<String, Object> variables, Class<T> returnType) {
-    return post(resource, variables)
-        .map(it -> it.getFirstList(returnType))
-        .flatMapMany(Flux::fromIterable);
-  }
-
-  private Mono<GraphQLResponse> post(String resource, Map<String, Object> variables) {
-    GraphQLRequest request = GraphQLRequest.builder()
-        .resource(resource)
-        .variables(variables)
-        .build();
-    return post(request);
+  private <T> Flux<T> tryRetry(Flux<T> publisher) {
+    return (retry == null ? publisher : publisher.retryWhen(retry));
   }
 
 }

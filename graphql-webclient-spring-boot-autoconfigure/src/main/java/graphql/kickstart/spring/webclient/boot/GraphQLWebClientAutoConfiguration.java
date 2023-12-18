@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.util.retry.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -28,11 +29,12 @@ import org.springframework.web.reactive.function.client.WebClient;
   OAuth2ClientAutoConfiguration.class,
   WebFluxAutoConfiguration.class
 })
-@EnableConfigurationProperties(GraphQLClientProperties.class)
+@EnableConfigurationProperties({ GraphQLClientProperties.class, GraphQLClientRetryProperties.class })
 @ComponentScan(basePackageClasses = GraphQLWebClientImpl.class)
 public class GraphQLWebClientAutoConfiguration {
 
   private final GraphQLClientProperties graphqlClientProperties;
+  private final GraphQLClientRetryProperties graphqlClientRetryProperties;
 
   @Bean
   @ConditionalOnMissingBean
@@ -76,7 +78,42 @@ public class GraphQLWebClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public GraphQLWebClient graphQLWebClient(WebClient webClient, ObjectMapper objectMapper) {
-    return new GraphQLWebClientImpl(webClient, objectMapper);
+  public GraphQLWebClient graphQLWebClient(WebClient webClient, ObjectMapper objectMapper, GraphQLWebClientRetryProvider retryProvider) {
+    return new GraphQLWebClientImpl(webClient, objectMapper, retryProvider.get());
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public GraphQLWebClientRetryProvider graphQLWebClientRetryProvider(GraphQLWebClientRetryErrorFilterPredicate errorFilterPredicate) {
+    return () -> switch(graphqlClientRetryProperties.getStrategy()) {
+      case BACKOFF ->
+          Retry.backoff(graphqlClientRetryProperties.getBackoff().getMaxAttempts(), graphqlClientRetryProperties.getBackoff().getMinBackoff())
+              .maxBackoff(graphqlClientRetryProperties.getBackoff().getMaxBackoff())
+              .modifyErrorFilter(p -> p.and(errorFilterPredicate));
+
+      case FIXED_DELAY ->
+          Retry.fixedDelay(graphqlClientRetryProperties.getFixedDelay().getMaxAttempts(), graphqlClientRetryProperties.getFixedDelay().getDelay())
+              .modifyErrorFilter(p -> p.and(errorFilterPredicate));
+
+      case INDEFINITELY ->
+          Retry.indefinitely()
+              .modifyErrorFilter(p -> p.and(errorFilterPredicate));
+
+      case MAX ->
+          Retry.max(graphqlClientRetryProperties.getMax().getMaxAttempts())
+              .modifyErrorFilter(p -> p.and(errorFilterPredicate));
+
+      case MAX_IN_ROW ->
+          Retry.maxInARow(graphqlClientRetryProperties.getMaxInRow().getMaxAttempts())
+              .modifyErrorFilter(p -> p.and(errorFilterPredicate));
+
+      default -> null;
+    };
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public GraphQLWebClientRetryErrorFilterPredicate graphQLWebClientRetryErrorFilterPredicate() {
+    return t -> true;
   }
 }
