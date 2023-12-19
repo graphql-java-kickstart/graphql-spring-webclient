@@ -101,6 +101,11 @@ class GraphQLResponseTest {
   }
 
   @Test
+  void getRawResponse() {
+    GraphQLResponse response = constructResponse("{ \"data\": null }");
+    assertEquals("{ \"data\": null }", response.getRawResponse());
+  }
+    
   void getAt_dataFieldExists_returnsValue() {
     GraphQLResponse response = constructResponse("{ \"data\": { \"field\": { \"innerField\": \"value\" } } }");
     String value = response.getAt("field.innerField", String.class);
