@@ -2,7 +2,7 @@ plugins {
     id "org.springframework.boot" version "$LIB_SPRING_BOOT_VER" apply false
     id "org.sonarqube" version "4.4.1.3373"
     id "jacoco"
-    id "io.github.gradle-nexus.publish-plugin" version '1.3.0'
+    id "io.github.gradle-nexus.publish-plugin" version '2.0.0'
 }
 
 sonar {
