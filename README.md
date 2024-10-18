@@ -57,7 +57,7 @@ class MyClass {
 
 ### Using latest Snapshots
 
-You can use the latest Snapshots by configuring the Snapshot repository, see https://www.graphql-java-kickstart.com/servlet/#using-the-latest-development-build.
+You can use the latest Snapshots by configuring the Snapshot repository, see https://graphql-java-kickstart.github.io/servlet/#using-the-latest-development-build.
 
 
 ## Configuration
